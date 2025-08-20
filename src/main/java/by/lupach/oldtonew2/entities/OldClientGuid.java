@@ -1,7 +1,10 @@
 package by.lupach.oldtonew2.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -11,7 +14,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class OldClientGuid {
+public class OldClientGuid { //вынес в отдельную таблицу, т.к. хранить в строке неатомарные данные нарушает 1NF sql
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

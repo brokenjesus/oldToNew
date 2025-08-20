@@ -1,39 +1,33 @@
 package by.lupach.oldtonew2.services;
 
-import by.lupach.oldtonew2.entities.ImportJobRun;
 import by.lupach.oldtonew2.entities.ImportError;
-import by.lupach.oldtonew2.exceptions.ImportException;
+import by.lupach.oldtonew2.entities.ImportJobRun;
+import by.lupach.oldtonew2.models.ImportStatistics;
 import by.lupach.oldtonew2.repositories.ImportErrorRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class ImportReportService {
+public class ReportServiceLoggerImpl implements ReportService {
 
     private final ImportErrorRepository errorRepo;
 
-    public void logWarning(ImportJobRun job, String noteGuid, Long patientId, String clientGuid, String msg) {
-        log.warn("{} [noteGuid={}, patientId={}, clientGuid={}]", msg, noteGuid, patientId, clientGuid);
-        saveError(job, noteGuid, patientId, clientGuid, msg, null);
+    public void logStatistic(ImportStatistics statistics) {
+        log.info(statistics.toString());
     }
 
-    public void logError(ImportJobRun job, String noteGuid, Long patientId, String clientGuid, String msg, Exception ex) {
+    public void logError(ImportJobRun job, UUID noteGuid, Long patientId, UUID clientGuid, String msg, Exception ex) {
         log.error("{} [noteGuid={}, patientId={}, clientGuid={}]", msg, noteGuid, patientId, clientGuid, ex);
         saveError(job, noteGuid, patientId, clientGuid, msg, ex);
     }
 
-    public void logImportError(ImportJobRun job, String noteGuid, Long patientId, String clientGuid, ImportException ex) {
-        log.error("Import error: {} [noteGuid={}, patientId={}, clientGuid={}]",
-                ex.getMessage(), noteGuid, patientId, clientGuid, ex);
-        saveError(job, noteGuid, patientId, clientGuid, ex.getMessage(), ex);
-    }
-
-    private void saveError(ImportJobRun job, String noteGuid, Long patientId, String clientGuid, String msg, Exception ex) {
+    private void saveError(ImportJobRun job, UUID noteGuid, Long patientId, UUID clientGuid, String msg, Exception ex) {
         ImportError error = ImportError.builder()
                 .jobRun(job)
                 .errorTime(LocalDateTime.now())
