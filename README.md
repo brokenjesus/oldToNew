@@ -76,12 +76,6 @@ app.lookback-years=10
 | ---------------- | ----------------------------------- | ---------------------------------------------- |
 | `OLD_SYSTEM_URL` | Базовый URL REST API старой системы | [http://localhost:8081](http://localhost:8081) |
 
-### Логирование
-
-```properties
-logging.level.root=INFO
-logging.level.com.example.importer=INFO
-```
 
 ## Запуск
 
