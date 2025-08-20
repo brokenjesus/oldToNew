@@ -1,0 +1,15 @@
+package by.lupach.oldtonew;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+@SpringBootApplication
+@EnableScheduling
+public class OldToNewApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(OldToNewApplication.class, args);
+    }
+
+}

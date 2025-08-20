@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>by.lupach</groupId>
-    <artifactId>oldToNew2</artifactId>
+    <artifactId>oldToNew</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>oldToNew2</name>
-    <description>oldToNew2</description>
+    <name>oldToNew</name>
+    <description>oldToNew</description>
     <url/>
     <licenses>
         <license/>

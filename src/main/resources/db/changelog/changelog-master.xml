@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- company_user -->
+    <changeSet id="1" author="lupach">
+        <createTable tableName="company_user">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="login" type="VARCHAR(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- import_job_run -->
+    <changeSet id="2" author="lupach">
+        <createTable tableName="import_job_run">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="started_at" type="TIMESTAMP"/>
+            <column name="finished_at" type="TIMESTAMP"/>
+            <column name="status" type="VARCHAR(255)"/>
+            <column name="new_count" type="INT"/>
+            <column name="updated_count" type="INT"/>
+            <column name="skipped_count" type="INT"/>
+            <column name="error_count" type="INT"/>
+        </createTable>
+    </changeSet>
+
+    <!-- import_error -->
+    <changeSet id="3" author="lupach">
+        <createTable tableName="import_error">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="job_run_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="error_time" type="TIMESTAMP"/>
+            <column name="note_guid" type="UUID"/>
+            <column name="patient_id" type="BIGINT"/>
+            <column name="client_guid" type="UUID"/>
+            <column name="message" type="TEXT"/>
+            <column name="stacktrace" type="TEXT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="import_error" baseColumnNames="job_run_id"
+                referencedTableName="import_job_run" referencedColumnNames="id"
+                constraintName="fk_import_error_jobrun"/>
+    </changeSet>
+
+    <!-- patient_profile -->
+    <changeSet id="4" author="lupach">
+        <createTable tableName="patient_profile">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)"/>
+            <column name="last_name" type="VARCHAR(255)"/>
+            <column name="status_id" type="SMALLINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- old_client_guid -->
+    <changeSet id="5" author="lupach">
+        <createTable tableName="old_client_guid">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="guid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="patient_profile_id" type="BIGINT"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="old_client_guid" baseColumnNames="patient_profile_id"
+                referencedTableName="patient_profile" referencedColumnNames="id"
+                constraintName="fk_oldclientguid_patientprofile"/>
+    </changeSet>
+
+    <!-- patient_note -->
+    <changeSet id="6" author="lupach">
+        <createTable tableName="patient_note">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="created_date_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_date_time" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by_user_id" type="BIGINT"/>
+            <column name="last_modified_by_user_id" type="BIGINT"/>
+            <column name="patient_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="note" type="VARCHAR(4000)"/>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="patient_note" baseColumnNames="created_by_user_id"
+                referencedTableName="company_user" referencedColumnNames="id"
+                constraintName="fk_note_createdby_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="patient_note" baseColumnNames="last_modified_by_user_id"
+                referencedTableName="company_user" referencedColumnNames="id"
+                constraintName="fk_note_lastmodifiedby_user"/>
+
+        <addForeignKeyConstraint
+                baseTableName="patient_note" baseColumnNames="patient_id"
+                referencedTableName="patient_profile" referencedColumnNames="id"
+                constraintName="fk_note_patient"/>
+    </changeSet>
+
+    <!-- old_note_guid -->
+    <changeSet id="7" author="lupach">
+        <createTable tableName="old_note_guid">
+            <column name="patient_note_id" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="guid" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+                baseTableName="old_note_guid" baseColumnNames="patient_note_id"
+                referencedTableName="patient_note" referencedColumnNames="id"
+                constraintName="fk_oldnoteguid_note"/>
+    </changeSet>
+
+</databaseChangeLog>
