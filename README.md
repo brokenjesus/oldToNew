@@ -16,15 +16,6 @@
 * Реализовано логирование ошибок и статистики импорта.
 * Старую систему имитирует REST API, доступный локально.
 
-## Структура таблиц Новой системы
-
-* **Пользователи (`company_user`)**
-  `id, login`
-* **Пациенты (`patient_profile`)**
-  `id, first_name, last_name, old_client_guid, status_id`
-* **Заметки (`patient_note`)**
-  `id, created_date_time, last_modified_date_time, created_by_user_id, last_modified_by_user_id, note, patient_id`
-
 ## Конфигурация
 
 Все параметры конфигурации задаются в `application.properties` или через переменные окружения.
