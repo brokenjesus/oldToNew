@@ -15,8 +15,13 @@ public class OldClientGuidServiceImpl implements OldClientGuidService {
     private final OldClientGuidRepository oldClientGuidRepository;
 
     @Override
-    public List<OldClientGuid> getAllClientGuids() {
+    public List<OldClientGuid> getAllClientsGuids() {
         return oldClientGuidRepository.findAll();
+    }
+
+    @Override
+    public List<OldClientGuid> getAllClientGuids(Long patientId) {
+        return oldClientGuidRepository.findByPatientProfileId(patientId);
     }
 
     @Override

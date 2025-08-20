@@ -50,7 +50,7 @@ public class PatientServiceImpl implements PatientService {
         }
 
         // Step 1: Find the events GUID
-        List<OldClientGuid> existingOldClientGuids = oldClientGuidService.getAllClientGuids();
+        List<OldClientGuid> existingOldClientGuids = oldClientGuidService.getAllClientsGuids();
 
 
         // Step 2: Search for duplicates (if full name and date of birth match)
@@ -116,7 +116,7 @@ public class PatientServiceImpl implements PatientService {
                 .map(oldClientGuidService::getByGuid)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
-                .map(OldClientGuid::getPatientProfileId)
+                .map(oldClientGuid -> oldClientGuid.getPatientProfile().getId())
                 .findFirst()
                 .orElse(null);
 
@@ -125,12 +125,14 @@ public class PatientServiceImpl implements PatientService {
         }
 
         PatientProfile patientProfile = getByIdInNewSystem(idInNewSystem);
+        List<OldClientGuid> guids = oldClientGuidService.getAllClientGuids(patientProfile.getId());
+
 
         OldClientDto mainPatient = selectMainPatient(duplicates);
         patientProfile.setStatusId(mainPatient.getStatus());
 
         for (OldClientDto duplicate : duplicates) {
-            if (!duplicate.getGuid().equals(mainPatient.getGuid())) {
+            if (!guids.stream().map(OldClientGuid::getGuid).toList().contains(duplicate.getGuid())) {
                 OldClientGuid additionalGuid = OldClientGuid.builder()
                         .guid(duplicate.getGuid())
                         .build();

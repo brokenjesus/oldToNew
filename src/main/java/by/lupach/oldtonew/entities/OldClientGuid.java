@@ -15,6 +15,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class OldClientGuid {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,6 +23,7 @@ public class OldClientGuid {
     @Column(name = "guid", nullable = false, unique = true)
     private UUID guid;
 
-    @Column(name = "patient_profile_id", insertable = false, updatable = false)
-    private Long patientProfileId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "patient_profile_id", nullable = false)
+    private PatientProfile patientProfile;
 }

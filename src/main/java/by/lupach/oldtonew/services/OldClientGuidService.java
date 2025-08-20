@@ -7,7 +7,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface OldClientGuidService {
-    List<OldClientGuid> getAllClientGuids();
+    List<OldClientGuid> getAllClientsGuids();
+
+    List<OldClientGuid> getAllClientGuids(Long patientId);
 
     Optional<OldClientGuid> getByGuid(UUID guid);
 }

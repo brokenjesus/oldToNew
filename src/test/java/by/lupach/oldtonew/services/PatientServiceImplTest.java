@@ -44,7 +44,6 @@ class PatientServiceImplTest {
     private OldClientDto testClient1;
     private OldClientDto testClient2;
     private OldClientDto testClient3;
-    private OldClientGuid existingGuid;
     private PatientProfile existingPatient;
 
     @BeforeEach
@@ -85,10 +84,6 @@ class PatientServiceImplTest {
                 .createdDateTime("2023-01-03T10:00:00")
                 .build();
 
-        existingGuid = OldClientGuid.builder()
-                .guid(UUID.randomUUID())
-                .patientProfileId(1L)
-                .build();
 
         existingPatient = PatientProfile.builder()
                 .id(1L)
@@ -160,7 +155,7 @@ class PatientServiceImplTest {
                 .oldClientGuids(new ArrayList<>())
                 .build();
 
-        when(oldClientGuidService.getAllClientGuids()).thenReturn(existingGuids);
+        when(oldClientGuidService.getAllClientsGuids()).thenReturn(existingGuids);
         when(patientRepo.save(any(PatientProfile.class))).thenReturn(savedPatient);
         when(statistics.getUpdatedPatients()).thenReturn(0);
 
@@ -184,7 +179,7 @@ class PatientServiceImplTest {
                 .oldClientGuids(new ArrayList<>())
                 .build();
 
-        when(oldClientGuidService.getAllClientGuids()).thenReturn(existingGuids);
+        when(oldClientGuidService.getAllClientsGuids()).thenReturn(existingGuids);
         when(patientRepo.save(any(PatientProfile.class))).thenReturn(savedPatient);
 
         List<PatientProfile> result = patientService.savePatients(clients);
@@ -198,10 +193,10 @@ class PatientServiceImplTest {
     void savePatients_WithMixedExistingAndNewGuids_ShouldUpdatePatient() throws Exception {
         List<OldClientDto> clients = Arrays.asList(testClient1, testClient2);
         List<OldClientGuid> existingGuids = Arrays.asList(
-                OldClientGuid.builder().guid(testClient1.getGuid()).patientProfileId(1L).build()
+                OldClientGuid.builder().guid(testClient1.getGuid()).patientProfile(existingPatient).build()
         );
 
-        when(oldClientGuidService.getAllClientGuids()).thenReturn(existingGuids);
+        when(oldClientGuidService.getAllClientsGuids()).thenReturn(existingGuids);
         when(oldClientGuidService.getByGuid(testClient1.getGuid()))
                 .thenReturn(Optional.of(existingGuids.get(0)));
         when(patientRepo.getReferenceById(1L)).thenReturn(existingPatient);
@@ -352,7 +347,7 @@ class PatientServiceImplTest {
         List<OldClientDto> duplicates = Arrays.asList(testClient1, testClient2);
         OldClientGuid existingGuid = OldClientGuid.builder()
                 .guid(testClient1.getGuid())
-                .patientProfileId(1L)
+                .patientProfile(existingPatient)
                 .build();
 
         when(oldClientGuidService.getByGuid(testClient1.getGuid()))
@@ -366,7 +361,7 @@ class PatientServiceImplTest {
         PatientProfile result = (PatientProfile) method.invoke(patientService, duplicates);
 
         assertNotNull(result);
-        assertEquals(1, result.getOldClientGuids().size());
+        assertEquals(2, result.getOldClientGuids().size());
         verify(patientRepo).save(existingPatient);
     }
 
