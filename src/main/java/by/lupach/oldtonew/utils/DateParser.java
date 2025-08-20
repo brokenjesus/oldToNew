@@ -20,10 +20,6 @@ public class DateParser {
             ZonedDateTime zdt = ZonedDateTime.parse(value, TS_TZ);
             return zdt.withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime();
         } catch (DateTimeParseException ignored) {}
-        try {
-            return LocalDateTime.parse(value, TS);
-        } catch (DateTimeParseException e) {
-            throw e;
-        }
+        return LocalDateTime.parse(value, TS);
     }
 }
