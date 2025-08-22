@@ -11,7 +11,7 @@ public class OldNoteDto {
     private String comments;
     private UUID guid;
     private String modifiedDateTime;
-    private String clientGuid;
+    private UUID clientGuid;
     private String datetime;
     private String loggedUser;
     private String createdDateTime;
